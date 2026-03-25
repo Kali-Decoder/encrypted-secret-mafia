@@ -1,0 +1,14 @@
+{
+  "contractName": "SecretMafia",
+  "address": "0xcf2dfCa5804a0f32D8bB233dF0898B8238b40658",
+  "deployer": "0xdAF0182De86F904918Db8d07c7340A1EfcDF8244",
+  "network": "arb-sepolia",
+  "chainId": "421614",
+  "deployedAt": "2026-03-18T19:31:22.032Z",
+  "features": {
+    "fheEnabled": true,
+    "privateRoles": true,
+    "privateVoting": true,
+    "asyncDecryption": true
+  }
+}

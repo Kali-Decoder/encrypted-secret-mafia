@@ -1,0 +1,87 @@
+"use client";
+
+import { GameInfo, GameState, gameStateLabels, phaseLabels } from "@/hooks/useSecretSanta";
+import { Users, Crown, ChevronRight, Activity, CheckCircle2, LogIn } from "lucide-react";
+import { useAccount } from "wagmi";
+
+interface GameCardProps {
+  game: GameInfo;
+  onClick?: () => void;
+  isJoined?: boolean;
+  showJoinButton?: boolean;
+  onJoin?: () => void;
+}
+
+export const GameCard = ({ game, onClick, isJoined, showJoinButton, onJoin }: GameCardProps) => {
+  const { address } = useAccount();
+  const isCreator = address?.toLowerCase() === game.creator.toLowerCase();
+
+  const getStateStyles = () => {
+    switch (game.state) {
+      case GameState.WAITING:
+        return "text-santa-deepRed bg-pastel-coral/30 border-pastel-coral";
+      case GameState.ACTIVE:
+        return "text-santa-deepRed bg-pastel-mint/50 border-pastel-mint";
+      case GameState.ENDED:
+        return "text-fhenix-purple bg-fhenix-purple/10 border-fhenix-purple/30";
+      default:
+        return "text-santa-deepRed/60 bg-santa-deepRed/10 border-santa-deepRed/20";
+    }
+  };
+
+  return (
+    <div className="w-full p-4 bg-white border border-santa-deepRed/10 rounded-lg hover:border-fhenix-purple/50 hover:shadow-md transition-all text-left group">
+      <div className="flex items-start justify-between gap-3">
+        <button onClick={onClick} className="flex-1 min-w-0 text-left">
+          <div className="flex items-center gap-2 mb-2">
+            <h4 className="font-bold text-santa-deepRed truncate">{game.name}</h4>
+            {isCreator && (
+              <div className="flex items-center gap-1 px-2 py-0.5 bg-fhenix-purple/10 rounded-lg">
+                <Crown className="w-3 h-3 text-fhenix-purple" />
+                <span className="text-xs text-fhenix-purple font-medium">Creator</span>
+              </div>
+            )}
+            {isJoined && (
+              <div className="flex items-center gap-1 px-2 py-0.5 bg-fhenix-purple/20 rounded-lg">
+                <CheckCircle2 className="w-3 h-3 text-fhenix-purple" />
+                <span className="text-xs text-fhenix-purple font-medium">Joined</span>
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3 text-sm text-santa-deepRed/60">
+            <div className="flex items-center gap-1">
+              <span className="text-xs text-santa-deepRed/50">ID:</span>
+              <span className="font-mono">{game.gameId.toString()}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Users className="w-4 h-4" />
+              <span>{game.playerCount.toString()} players</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Activity className="w-4 h-4" />
+              <span>{phaseLabels[game.phase]} • Round {game.round.toString()}</span>
+            </div>
+          </div>
+        </button>
+
+        <div className="flex items-center gap-3">
+          <div className={`px-2 py-1 text-xs font-medium rounded-lg border ${getStateStyles()}`}>
+            {gameStateLabels[game.state]}
+          </div>
+          {showJoinButton && !isJoined && game.state === GameState.WAITING ? (
+            <button
+              onClick={onJoin}
+              className="btn-fhenix h-9 px-3 flex items-center gap-2"
+            >
+              <LogIn className="w-4 h-4" />
+              Join
+            </button>
+          ) : (
+            <ChevronRight className="w-5 h-5 text-santa-deepRed/30 group-hover:text-fhenix-purple transition-colors" />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
